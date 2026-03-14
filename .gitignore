@@ -213,4 +213,7 @@ __pycache__/
 .venv/
 .dplay/
 *.log
+filemerger-output.txt.DS_Store
 filemerger-output.txt
+project_tree.txt
+djangoplay_cli.egg-info/
