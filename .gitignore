@@ -211,9 +211,10 @@ __pycache__/
 *.pyo
 *.pyd
 .venv/
+venv/
 .dplay/
 *.log
-filemerger-output.txt.DS_Store
+.DS_Store
 filemerger-output.txt
 project_tree.txt
 djangoplay_cli.egg-info/
