@@ -3,49 +3,97 @@ CLI entrypoint for djangoplay-cli.
 
 This module defines the root CLI application and registers
 all command groups.
-
-Implemented commands in v0.2:
-
-- dplay dev http
-- dplay dev ssl
-- dplay dev worker
-- dplay system doctor
-- dplay system reset
-- dplay shell
 """
+
+from importlib.metadata import version
 
 import typer
 
+from dplay.commands.dev.down import down_command
 from dplay.commands.dev.http import http_command
+from dplay.commands.dev.logs import logs_command
 from dplay.commands.dev.ssl import ssl_command
+from dplay.commands.dev.up import up_command
 from dplay.commands.dev.worker import worker_command
 from dplay.commands.system.doctor import doctor_command
 from dplay.commands.system.reset import reset_command
 
 app = typer.Typer(help="DjangoPlay CLI")
 
-dev_app = typer.Typer(help="Development commands")
-env_app = typer.Typer(help="Environment diagnostics")
-
-dev_app.command("http")(http_command)
-dev_app.command("ssl")(ssl_command)
-dev_app.command("worker")(worker_command)
-env_app.command("doctor")(doctor_command)
-env_app.command("reset")(reset_command)
-
-app.add_typer(dev_app, name="dev")
-app.add_typer(env_app, name="system")
-
 
 # ------------------------------------------------------------------
 # EXTENSIBLE METADATA
 # ------------------------------------------------------------------
-def main():
+
+
+def get_cli_version() -> str:
+    """
+    Retrieve CLI version from installed package metadata.
+    """
+
+    try:
+        return version("djangoplay-cli")
+    except Exception:
+        return "unknown"
+
+
+# ------------------------------------------------------------------
+# DEV COMMAND GROUP
+# ------------------------------------------------------------------
+
+dev_app = typer.Typer(help="Development commands")
+
+dev_app.command("http")(http_command)
+dev_app.command("ssl")(ssl_command)
+dev_app.command("worker")(worker_command)
+dev_app.command("up")(up_command)
+dev_app.command("down")(down_command)
+
+app.add_typer(dev_app, name="dev")
+
+# ------------------------------------------------------------------
+# SYSTEM COMMAND GROUP
+# ------------------------------------------------------------------
+
+system_app = typer.Typer(help="System environment commands")
+
+system_app.command("doctor")(doctor_command)
+system_app.command("reset")(reset_command)
+
+app.add_typer(system_app, name="system")
+
+# ------------------------------------------------------------------
+# LOG COMMAND
+# ------------------------------------------------------------------
+
+app.command("logs")(logs_command)
+
+# -------------------------------------------------------------
+# GLOBAL OPTIONS
+# ------------------------------------------------------------------
+
+
+@app.callback(invoke_without_command=True)
+def callback(
+    ctx: typer.Context,
+    version_flag: bool = typer.Option(None, "--version", "-v", is_eager=True),
+):
     """
     CLI entrypoint used by the console script.
+
+    This wrapper ensures compatibility with Python packaging
+    and avoids exposing the Typer object directly and handles
+    global CLI option such as --version.
     """
+
+    if version_flag:
+        typer.echo(get_cli_version())
+        raise typer.Exit()
+
+    if ctx.invoked_subcommand is None:
+        typer.echo(ctx.get_help())
+        raise typer.Exit()
+
+
+def main():
     app()
-
-
-if __name__ == "__main__":
-    main()
