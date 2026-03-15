@@ -35,7 +35,6 @@ def restart_celery():
 
     print("Stopping existing Celery workers...")
 
-    # File support 0.1
     subprocess.run(
         'pkill -9 -f "celery.*paystream" 2>/dev/null || true',
         shell=True,
