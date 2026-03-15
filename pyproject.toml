@@ -1,12 +1,13 @@
 [project]
 name = "djangoplay-cli"
-version = "0.2.0"
+version = "1.0.0"
 description = "CLI tools for DjangoPlay developers. 'djangoplay-cli' provides a lightweight command-line interface for developers working on the 'DjangoPlay ecosystem'."
 requires-python = ">=3.11"
 
 dependencies = [
     "typer>=0.9",
-    "rich>=13"
+    "rich>=13",
+    "pyyaml>=6.0"
 ]
 
 [project.scripts]
