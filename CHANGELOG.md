@@ -6,6 +6,27 @@ This project follows **Semantic Versioning**.
 
 ---
 
+## [0.2.0] - 2026-03-10
+
+**Tag:** `v0.2.0-system-diagnostics`
+
+### Environment Diagnostics
+
+### Added
+
+* `dplay system doctor`
+* `dplay system reset`
+* environment diagnostics module
+* redis / postgres / celery environment checks
+
+### Developer Experience
+
+* environment health checks before starting services
+* CLI utilities for resetting development environment
+
+---
+
+
 ## [0.1.0] - 2026-03-09
 
 **Tag:** `v0.1.0-cli-foundation`
