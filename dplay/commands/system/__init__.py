@@ -1,3 +1,3 @@
 """
-Environment command group.
+DjangoPlay CLI Health Diagnostics
 """

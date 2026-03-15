@@ -5,6 +5,50 @@ All notable changes to the **djangoplay-cli** developer tooling will be document
 This project follows **Semantic Versioning**.
 
 ---
+## [1.0.0] - 2026-03-15
+
+**Tag:** v1.0.0-dev-environment-manager
+
+### 🚀 Major Release — DjangoPlay Developer Environment Manager
+
+This release marks the first **production-ready release** of `djangoplay-cli`.
+
+The CLI now functions as a full **local development environment manager**
+for the DjangoPlay ecosystem.
+
+### Added
+
+* repository awareness allowing CLI commands from any directory inside the repo
+* service detection utilities for Redis, Postgres and Celery
+* process management commands
+
+Commands introduced
+
+* `dplay dev up`
+* `dplay dev down`
+* `dplay logs`
+
+### Improvements
+
+* improved CLI help output
+* global `--version / -v` option
+* CLI version derived from installed package metadata
+* improved command structure and Typer command grouping
+* cleaner CLI entrypoint implementation
+
+### Architecture
+
+* improved modular CLI architecture
+* separation of command, core, environment and utility layers
+* production-ready CLI structure for future extensibility
+
+### Developer Experience
+
+* commands can run from any subdirectory of the repository
+* safe service startup preventing duplicate Celery workers
+* consistent environment diagnostics
+
+---
 
 ## [0.2.0] - 2026-03-10
 

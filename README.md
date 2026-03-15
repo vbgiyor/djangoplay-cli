@@ -5,9 +5,19 @@
 ![Lint](https://img.shields.io/badge/lint-ruff-informational)
 ![Formatting](https://img.shields.io/badge/format-ruff-informational)
 
-**djangoplay-cli** provides a lightweight command-line interface for developers working on the **DjangoPlay ecosystem**.
+**djangoplay-cli** is a developer command-line interface for managing local
+development environments within the **DjangoPlay ecosystem**.
 
-The goal of this tool is to simplify common development tasks such as running the development server and managing Celery workers — without requiring complex local setup.
+The CLI simplifies common developer workflows such as:
+
+- starting the development server
+- managing Celery workers
+- validating environment dependencies
+- resetting development services
+- orchestrating local development processes
+
+The goal is to provide a **simple, predictable, and portable developer tool**
+without introducing complex infrastructure dependencies.
 
 The CLI is intentionally designed to remain:
 
@@ -28,6 +38,7 @@ This project follows several guiding principles:
 * **Clear command structure**
 * **Stable developer experience**
 * **Incremental releases**
+* **Developer-first ergonomics**
 
 The CLI should help developers focus on building applications instead of managing local environment complexity.
 
@@ -47,17 +58,10 @@ The CLI should help developers focus on building applications instead of managin
 
 # Installation
 
-Clone the repository:
+Install from PyPI:
 
 ```bash
-git clone https://github.com/binaryfleet/djangoplay-cli.git
-cd djangoplay-cli
-```
-
-Install the CLI locally:
-
-```bash
-pip install -e .
+pip install djangoplay-cli
 ```
 
 After installation, the CLI command becomes available globally:
