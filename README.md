@@ -19,14 +19,6 @@ The CLI simplifies common developer workflows such as:
 The goal is to provide a **simple, predictable, and portable developer tool**
 without introducing complex infrastructure dependencies.
 
-The CLI is intentionally designed to remain:
-
-* **Simple**
-* **Predictable**
-* **Portable**
-* **Secure**
-* **Developer-friendly**
-
 ---
 
 # Philosophy
@@ -40,19 +32,20 @@ This project follows several guiding principles:
 * **Incremental releases**
 * **Developer-first ergonomics**
 
-The CLI should help developers focus on building applications instead of managing local environment complexity.
+The CLI is designed to remove repetitive setup tasks so developers can focus
+on application development instead of environment management.
 
 ---
 
 # Supported Platforms
 
-| Platform       | Support   |
-| -------------- | --------- |
-| macOS          | Supported |
-| Linux          | Supported |
-| Ubuntu         | Supported |
-| Windows (WSL)  | Supported |
-| Windows native | Limited   |
+| Platform | Status |
+|--------|--------|
+| macOS | Supported |
+| Linux | Supported |
+| Ubuntu | Supported |
+| Windows (WSL) | Supported |
+| Windows native | Limited |
 
 ---
 
@@ -62,50 +55,192 @@ Install from PyPI:
 
 ```bash
 pip install djangoplay-cli
-```
+````
 
-After installation, the CLI command becomes available globally:
+Verify installation:
 
 ```bash
-dplay
+dplay --version
+```
+
+Example output:
+
+```
+1.0.0
 ```
 
 ---
 
-# Basic Usage
+# CLI Overview
 
-Run the Django development server:
+The CLI is organized into command groups.
 
-```bash
+```
+dplay
+ ├── dev
+ │    ├── http
+ │    ├── ssl
+ │    ├── worker
+ │    ├── up
+ │    └── down
+ │
+ ├── system
+ │    ├── doctor
+ │    └── reset
+ │
+ └── logs
+```
+
+---
+
+# Development Commands
+
+These commands manage the Django development environment.
+
+### Start HTTP development server
+
+```
 dplay dev http
 ```
 
-Run the development server with HTTPS:
+Starts:
 
-```bash
+* Celery worker
+* Celery beat
+* Django development server
+
+Server URL:
+
+```
+http://localhost:3333
+```
+
+---
+
+### Start HTTPS development server
+
+```
 dplay dev ssl
 ```
 
-Run the Celery worker:
+Uses `runserver_plus` when available.
 
-```bash
+Server URL:
+
+```
+https://localhost:9999
+```
+
+---
+
+### Start Celery worker
+
+```
 dplay dev worker
 ```
+
+Starts the Celery worker for the DjangoPlay application.
+
+---
+
+### Start full development environment
+
+```
+dplay dev up
+```
+
+Starts all development services including:
+
+* Celery worker
+* Celery beat
+* Django development server
+
+---
+
+### Stop development services
+
+```
+dplay dev down
+```
+
+Stops running Celery processes and development services.
+
+---
+
+# System Commands
+
+System commands validate and reset the development environment.
+
+### Run environment diagnostics
+
+```
+dplay system doctor
+```
+
+Checks:
+
+* Python version
+* Redis availability
+* PostgreSQL availability
+* Celery installation
+
+Example output:
+
+```
+Environment Diagnostics
+
+✔ Python version OK
+✔ Redis reachable
+✔ Postgres reachable
+✔ Celery available
+```
+
+---
+
+### Reset development environment
+
+```
+dplay system reset
+```
+
+Actions performed:
+
+* stop running Celery workers
+* stop Celery beat processes
+* flush Redis cache
+
+---
+
+# Logs
+
+Display development logs.
+
+```
+dplay logs
+```
+
+(Currently reserved for future improvements.)
 
 ---
 
 # CLI Help
 
-All commands provide detailed help:
+Show CLI help:
 
-```bash
+```
 dplay --help
 ```
 
-Example:
+Show development commands:
 
-```bash
+```
 dplay dev --help
+```
+
+Show system commands:
+
+```
+dplay system --help
 ```
 
 ---
@@ -120,44 +255,51 @@ dplay/
   core/
   environment/
   utils/
-
-scripts/
-config/
-docs/
-tests/
 ```
 
-The codebase separates:
+### Architecture Layers
 
-| Layer        | Responsibility         |
-| ------------ | ---------------------- |
-| CLI Commands | User-facing commands   |
-| Core         | Infrastructure logic   |
-| Environment  | Environment validation |
-| Utils        | Shared helpers         |
+| Layer        | Responsibility                   |
+| ------------ | -------------------------------- |
+| CLI Commands | user-facing commands             |
+| Core         | repository and service detection |
+| Environment  | environment validation           |
+| Utils        | reusable helpers                 |
 
-This structure ensures the project remains maintainable as the CLI grows.
+This modular architecture keeps the CLI maintainable as new features are added.
 
 ---
 
-# Development
+# Development Setup
 
-Install development dependencies:
+Clone repository:
 
-```bash
+```
+git clone https://github.com/binaryfleet/djangoplay-cli.git
+cd djangoplay-cli
+```
+
+Install in editable mode:
+
+```
 pip install -e .
+```
+
+Install development tools:
+
+```
 pip install ruff pytest
 ```
 
 Run lint checks:
 
-```bash
+```
 ruff check .
 ```
 
 Run tests:
 
-```bash
+```
 pytest
 ```
 
@@ -165,14 +307,28 @@ pytest
 
 # Security Principles
 
-This project follows strict security rules:
+This project follows strict security practices:
 
-* No credentials stored in the repository
-* Secrets must be stored locally
-* CLI never writes secrets automatically
+* no credentials stored in the repository
+* secrets must remain in local environment files
+* CLI never generates secrets automatically
+* CLI never writes credentials to disk
+
+---
+
+# Versioning
+
+This project follows **Semantic Versioning**.
+
+```
+v0.x  → experimental development
+v1.x  → stable production releases
+```
 
 ---
 
 # License
 
-This project is licensed under the **MIT [LICENSE](LICENSE)**.
+This project is licensed under the **MIT License**.
+
+See the [LICENSE](LICENSE) file for details.
