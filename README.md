@@ -55,7 +55,7 @@ Install from PyPI:
 
 ```bash
 pip install djangoplay-cli
-````
+```
 
 Verify installation:
 
@@ -66,7 +66,7 @@ dplay --version
 Example output:
 
 ```
-1.0.0
+1.0.2
 ```
 
 ---
@@ -80,9 +80,7 @@ dplay
  ├── dev
  │    ├── http
  │    ├── ssl
- │    ├── worker
- │    ├── up
- │    └── down
+ │    └── worker
  │
  ├── system
  │    ├── doctor
@@ -97,17 +95,24 @@ dplay
 
 These commands manage the Django development environment.
 
+---
+
 ### Start HTTP development server
 
 ```
 dplay dev http
 ```
 
-Starts:
+Performs the following steps automatically:
 
-* Celery worker
-* Celery beat
-* Django development server
+* encrypts environment variables from `~/.dplay/`
+* flushes Redis cache
+* collects static files
+* restarts Celery worker and beat
+* waits until Celery is ready
+* stops any existing Django server on the port
+* opens the browser
+* starts the Django HTTP development server
 
 Server URL:
 
@@ -123,12 +128,30 @@ http://localhost:3333
 dplay dev ssl
 ```
 
-Uses `runserver_plus` when available.
+Performs the same steps as `dplay dev http`, plus:
+
+* checks for SSL certificates under `~/.dplay/ssl/`
+* generates self-signed certificates if absent
+* trusts the certificate in the macOS System Keychain automatically (macOS only)
+* starts the server via `runserver_plus` with the certificate and key
 
 Server URL:
 
 ```
 https://localhost:9999
+```
+
+> If SSL certificates cannot be created, the CLI exits with:
+> `TLS certificate unavailable. Use dplay dev http`
+
+---
+
+### Default command
+
+Running `dplay dev` without a subcommand starts the HTTP server:
+
+```
+dplay dev
 ```
 
 ---
@@ -139,31 +162,7 @@ https://localhost:9999
 dplay dev worker
 ```
 
-Starts the Celery worker for the DjangoPlay application.
-
----
-
-### Start full development environment
-
-```
-dplay dev up
-```
-
-Starts all development services including:
-
-* Celery worker
-* Celery beat
-* Django development server
-
----
-
-### Stop development services
-
-```
-dplay dev down
-```
-
-Stops running Celery processes and development services.
+Starts the Celery worker for the DjangoPlay application in the foreground.
 
 ---
 
@@ -259,12 +258,12 @@ dplay/
 
 ### Architecture Layers
 
-| Layer        | Responsibility                   |
-| ------------ | -------------------------------- |
-| CLI Commands | user-facing commands             |
-| Core         | repository and service detection |
-| Environment  | environment validation           |
-| Utils        | reusable helpers                 |
+| Layer        | Responsibility                        |
+| ------------ | ------------------------------------- |
+| CLI Commands | user-facing commands                  |
+| Core         | repository detection, process manager |
+| Environment  | environment validation                |
+| Utils        | reusable helpers                      |
 
 This modular architecture keeps the CLI maintainable as new features are added.
 
@@ -310,7 +309,6 @@ pytest
 This project follows strict security practices:
 
 * no credentials stored in the repository
-* secrets must remain in local environment files
 * CLI never generates secrets automatically
 * CLI never writes credentials to disk
 
