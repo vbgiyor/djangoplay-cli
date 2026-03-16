@@ -9,16 +9,14 @@ from importlib.metadata import version
 
 import typer
 
-from dplay.commands.dev.down import down_command
 from dplay.commands.dev.http import http_command
 from dplay.commands.dev.logs import logs_command
 from dplay.commands.dev.ssl import ssl_command
-from dplay.commands.dev.up import up_command
 from dplay.commands.dev.worker import worker_command
 from dplay.commands.system.doctor import doctor_command
 from dplay.commands.system.reset import reset_command
 
-app = typer.Typer(help="DjangoPlay CLI")
+app = typer.Typer(help="DjangoPlay CLI", add_completion=False)
 
 
 # ------------------------------------------------------------------
@@ -41,13 +39,22 @@ def get_cli_version() -> str:
 # DEV COMMAND GROUP
 # ------------------------------------------------------------------
 
-dev_app = typer.Typer(help="Development commands")
+dev_app = typer.Typer(help="Development commands", invoke_without_command=True)
+
+
+@dev_app.callback(invoke_without_command=True)
+def dev_callback(ctx: typer.Context):
+    """
+    Development commands. Defaults to HTTP server when no subcommand given.
+    """
+
+    if ctx.invoked_subcommand is None:
+        http_command()
+
 
 dev_app.command("http")(http_command)
 dev_app.command("ssl")(ssl_command)
 dev_app.command("worker")(worker_command)
-dev_app.command("up")(up_command)
-dev_app.command("down")(down_command)
 
 app.add_typer(dev_app, name="dev")
 
