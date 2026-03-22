@@ -119,7 +119,10 @@ version-check:
 publish:
   stage: publish
   image: python:3.11
-  needs: [version-check]
+  needs:
+    - job: version-check
+    - job: build        # ← pull dist/ artifacts from build
+      artifacts: true
 
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
@@ -137,6 +140,7 @@ publish:
 
   script:
     - echo "Publishing djangoplay-cli to PyPI..."
+    - ls -la dist/
     - twine upload dist/* --non-interactive
     - echo "Published successfully!"
 
