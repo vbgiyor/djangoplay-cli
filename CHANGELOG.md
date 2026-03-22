@@ -6,6 +6,40 @@ This project follows **Semantic Versioning**.
 
 ---
 
+## [1.0.4] - 2026-03-22
+
+**Tag:** `v1.0.4-app-log-streaming`
+
+### App Log Streaming + PyPI Metadata
+
+### Added
+
+* `dplay dev logs` — new command to stream and pretty-print application logs
+  with colorized output by log level, live following, and level filtering
+* `dplay dev logs [APP]` — app name argument, defaults to `django`; app list
+  derived dynamically from `backend/logs/*.log` files on disk
+* `--lines / -n` — number of historical lines shown on startup (default 50)
+* `--level / -l` — filter output by log level e.g. `ERROR`, `WARNING`
+* `--follow / --no-follow` — stream new lines in real time (default: follow)
+* `utils/log_manager.py` — log path resolution, line parsing, level filtering,
+  colorized rendering, and efficient seek-from-end tail implementation
+* invalid app name prints error and lists all available app names
+
+### Fixed
+
+* follow mode `readline()` loop now seeks back on incomplete lines to prevent
+  partial reads being silently dropped during live streaming
+* `pyproject.toml` — added `readme`, `license`, `classifiers`, `authors`,
+  `keywords`, and `[project.urls]` for correct PyPI metadata display;
+  fixes missing Python version and license badges on PyPI
+
+### Changed
+
+* `dplay dev logs` is now the canonical home for the logs command under the
+  dev group; `dplay logs` retained at top level for backward compatibility
+
+---
+
 ## [1.0.3] - 2026-03-22
 
 **Tag:** `v1.0.3-cross-platform-ssl-trust`
