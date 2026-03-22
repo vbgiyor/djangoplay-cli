@@ -2,7 +2,7 @@
 
 ![PyPI](https://img.shields.io/pypi/v/djangoplay-cli)
 ![Python](https://img.shields.io/pypi/pyversions/djangoplay-cli)
-![License](https://img.shields.io/pypi/l/djangoplay-cli)
+![License](https://img.shields.io/badge/license-MIT-green)
 ![Django](https://img.shields.io/badge/django-4.2-green)
 ![Lint](https://img.shields.io/badge/lint-ruff-informational)
 
