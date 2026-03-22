@@ -6,6 +6,41 @@ This project follows **Semantic Versioning**.
 
 ---
 
+## [1.0.3] - 2026-03-22
+
+**Tag:** `v1.0.3-cross-platform-ssl-trust`
+
+### SSL Certificate Management — Complete Cross-Platform Support
+
+### Added
+
+* `dplay dev certs` — new command to regenerate SSL certificates on demand
+  from current `~/.dplay/config.yaml` without restarting the server
+* `_trust_certificate_linux()` — trusts generated certificate in the Linux
+  system store via `update-ca-certificates` (Debian, Ubuntu, derivatives)
+* `_trust_certificate_wsl()` — detects WSL via `/proc/version` and trusts
+  the certificate in both the Linux store and the Windows certificate store
+  via `certutil.exe` so Chrome and Edge on the Windows host accept it
+* `subdomains.extra_domains` support in `~/.dplay/config.yaml` — explicit
+  subdomain SANs for Chrome which does not honour `*.localhost` wildcards
+* `DNS:*.localhost` wildcard SAN added unconditionally for Firefox and Safari
+
+### Fixed
+
+* `cert_has_san()` — SAN entries now compared individually to avoid false
+  mismatch caused by OpenSSL comma-space formatting vs `_build_san()` output;
+  previously caused certificates to regenerate on every `dplay dev ssl` run
+* `_build_san()` — fixed `sudomains` typo in config key lookup causing
+  `extra_domains` to be silently ignored
+
+### Changed
+
+* `ensure_ssl_certificates()` — trust dispatch now covers macOS, Linux, and
+  WSL in sequence; each handler is a no-op on non-matching platforms
+* `certs_command()` — certificate paths printed as `~/.dplay/ssl/` relative
+  paths instead of absolute user paths
+
+
 ## [1.0.2] - 2026-03-16
 
 **Tag:** `v1.0.2-full-dev-environment-orchestration`

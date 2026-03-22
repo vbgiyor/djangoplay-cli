@@ -212,7 +212,6 @@ __pycache__/
 *.pyd
 .venv/
 venv/
-.dplay/
 *.log
 .DS_Store
 filemerger-output.txt
