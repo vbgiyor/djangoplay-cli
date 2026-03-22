@@ -2,10 +2,6 @@
 # Manually triggered only via GitLab UI → CI/CD → Run pipeline on main branch
 # Stages: test → build → version-check → publish
 
-workflow:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH == "main"'
-
 stages:
   - test
   - build
@@ -18,6 +14,10 @@ stages:
 test:
   stage: test
   image: python:3.11
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "push")'
+    - when: never
 
   variables:
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
@@ -43,6 +43,10 @@ build:
   stage: build
   image: python:3.11
   needs: [test]
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "push")'
+    - when: never
 
   variables:
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
@@ -78,6 +82,10 @@ version-check:
   image: python:3.11
   needs: [build]
 
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "push")'
+    - when: never
+
   script:
     - |
       python3 -c "
@@ -96,14 +104,9 @@ version-check:
       print(f'  Local version:  {v}')
 
       # Step 2: Validate semver format
-      # Accepts: 1.2.3 | 1.2.3a1 | 1.2.3b2 | 1.2.3rc1 | 1.2.3.post1 | 1.2.3.dev0
-      # Rejects: v1.2.3 | 1.2 | 1.2. | 1.2.3.4 | abc
       pattern = r'^\d+\.\d+\.\d+(\.?(post|dev)\d+)?((a|b|rc)\d+)?$'
       if not re.match(pattern, v):
           print(f'Version \"{v}\" is not valid semver.')
-          print('   Expected: MAJOR.MINOR.PATCH  e.g. 1.2.3')
-          print('   Also OK:  1.2.3a1  1.2.3b2  1.2.3rc1  1.2.3.post1  1.2.3.dev0')
-          print('   Invalid:  v1.2.3   1.2   1.2.   1.2.3.4')
           sys.exit(1)
       print('  Format:         valid semver')
 
@@ -135,6 +138,10 @@ publish:
   image: python:3.11
   needs: [version-check]
 
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && ($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web")'
+    - when: never
+
   variables:
     TWINE_USERNAME: $PYPI_USERNAME
     TWINE_PASSWORD: $PYPI_PASSWORD
@@ -144,6 +151,7 @@ publish:
 
   script:
     - echo "Publishing djangoplay-cli to PyPI..."
+    - ls -la dist/
     - twine upload dist/* --non-interactive
     - echo "Published successfully!"
 
