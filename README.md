@@ -6,7 +6,6 @@
 ![Django](https://img.shields.io/badge/django-4.2-green)
 ![Lint](https://img.shields.io/badge/lint-ruff-informational)
 
-
 **djangoplay-cli** is a developer command-line interface for managing local
 development environments within the **DjangoPlay ecosystem**.
 
@@ -16,6 +15,7 @@ The CLI simplifies common developer workflows such as:
 - managing Celery workers
 - validating environment dependencies
 - resetting development services
+- streaming application logs
 - orchestrating local development processes
 
 The goal is to provide a **simple, predictable, and portable developer tool**
@@ -54,21 +54,18 @@ on application development instead of environment management.
 # Installation
 
 Install from PyPI:
-
 ```bash
 pip install djangoplay-cli
 ```
 
 Verify installation:
-
 ```bash
 dplay --version
 ```
 
 Example output:
-
 ```
-1.0.3
+1.0.4
 ```
 
 ---
@@ -76,14 +73,14 @@ Example output:
 # CLI Overview
 
 The CLI is organized into command groups.
-
 ```
 dplay
  ├── dev
  │    ├── http
  │    ├── ssl
  │    ├── certs
- │    └── worker
+ │    ├── worker
+ │    └── logs
  │
  ├── system
  │    ├── doctor
@@ -101,7 +98,6 @@ These commands manage the Django development environment.
 ---
 
 ### Start HTTP development server
-
 ```
 dplay dev http
 ```
@@ -118,7 +114,6 @@ Performs the following steps automatically:
 * starts the Django HTTP development server
 
 Server URL:
-
 ```
 http://localhost:3333
 ```
@@ -126,7 +121,6 @@ http://localhost:3333
 ---
 
 ### Start HTTPS development server
-
 ```
 dplay dev ssl
 ```
@@ -135,13 +129,11 @@ Performs the same steps as `dplay dev http`, plus:
 
 * checks for SSL certificates under `~/.dplay/ssl/`
 * generates self-signed certificates if absent
-* trusts the certificate in the macOS System Keychain automatically (macOS only)
-* starts the server via `runserver_plus` with the certificate and key
 * trusts the certificate in the system keychain automatically
   (macOS Keychain, Linux system store, or Windows store via WSL)
+* starts the server via `runserver_plus` with the certificate and key
 
 Server URL:
-
 ```
 https://localhost:9999
 ```
@@ -154,7 +146,6 @@ https://localhost:9999
 ### Default command
 
 Running `dplay dev` without a subcommand starts the HTTP server:
-
 ```
 dplay dev
 ```
@@ -162,7 +153,6 @@ dplay dev
 ---
 
 ### Start Celery worker
-
 ```
 dplay dev worker
 ```
@@ -195,6 +185,36 @@ Then run:
 dplay dev certs
 dplay dev ssl
 ```
+
+---
+
+### Stream application logs
+```
+dplay dev logs
+dplay dev logs [APP]
+```
+
+Streams and pretty-prints application logs with colorized output by log level.
+Defaults to `django.log`. Pass an app name to tail a specific log file.
+Available apps are discovered automatically from `backend/logs/`.
+```
+dplay dev logs                            # django.log, last 50 lines, follow
+dplay dev logs users                      # users.log, last 50 lines, follow
+dplay dev logs mailer --level ERROR       # errors only, follow
+dplay dev logs django --no-follow -n 100  # last 100 lines, exit
+```
+
+Options:
+
+| Option | Default | Description |
+|---|---|---|
+| `APP` | `django` | App name e.g. users, mailer, frontend |
+| `--lines / -n` | `50` | Historical lines shown on startup |
+| `--level / -l` | None | Filter by level: DEBUG INFO WARNING ERROR CRITICAL |
+| `--follow / --no-follow` | follow | Stream new lines in real time |
+
+Also available as `dplay logs` at the top level.
+
 ---
 
 # System Commands
@@ -202,7 +222,6 @@ dplay dev ssl
 System commands validate and reset the development environment.
 
 ### Run environment diagnostics
-
 ```
 dplay system doctor
 ```
@@ -215,7 +234,6 @@ Checks:
 * Celery installation
 
 Example output:
-
 ```
 Environment Diagnostics
 
@@ -228,7 +246,6 @@ Environment Diagnostics
 ---
 
 ### Reset development environment
-
 ```
 dplay system reset
 ```
@@ -241,34 +258,19 @@ Actions performed:
 
 ---
 
-# Logs
-
-Display development logs.
-
-```
-dplay logs
-```
-
-(Currently reserved for future improvements.)
-
----
-
 # CLI Help
 
 Show CLI help:
-
 ```
 dplay --help
 ```
 
 Show development commands:
-
 ```
 dplay dev --help
 ```
 
 Show system commands:
-
 ```
 dplay system --help
 ```
@@ -276,7 +278,6 @@ dplay system --help
 ---
 
 # Project Structure
-
 ```
 djangoplay-cli/
 
@@ -289,12 +290,12 @@ dplay/
 
 ### Architecture Layers
 
-| Layer        | Responsibility                        |
-| ------------ | ------------------------------------- |
-| CLI Commands | user-facing commands                  |
-| Core         | repository detection, process manager |
-| Environment  | environment validation                |
-| Utils        | reusable helpers                      |
+| Layer        | Responsibility                              |
+| ------------ | ------------------------------------------- |
+| CLI Commands | user-facing commands                        |
+| Core         | repository detection, process manager       |
+| Environment  | environment validation                      |
+| Utils        | reusable helpers (ssl, logs, redis, static) |
 
 This modular architecture keeps the CLI maintainable as new features are added.
 
@@ -303,32 +304,27 @@ This modular architecture keeps the CLI maintainable as new features are added.
 # Development Setup
 
 Clone repository:
-
 ```
 git clone https://github.com/binaryfleet/djangoplay-cli.git
 cd djangoplay-cli
 ```
 
 Install in editable mode:
-
 ```
 pip install -e .
 ```
 
 Install development tools:
-
 ```
 pip install ruff pytest
 ```
 
 Run lint checks:
-
 ```
 ruff check .
 ```
 
 Run tests:
-
 ```
 pytest
 ```
@@ -348,7 +344,6 @@ This project follows strict security practices:
 # Versioning
 
 This project follows **Semantic Versioning**.
-
 ```
 v0.x  → experimental development
 v1.x  → stable production releases
