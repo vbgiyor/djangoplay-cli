@@ -1,17 +1,116 @@
+# ======================================================================
+# djangoplay-cli
+# Production-Grade Packaging Configuration
+# PEP 621 Compliant
+# ======================================================================
+
 [project]
 name = "djangoplay-cli"
-version = "1.0.3"
-description = "CLI tools for DjangoPlay developers. 'djangoplay-cli' provides a lightweight command-line interface for developers working on the 'DjangoPlay ecosystem'."
+version = "1.0.3rc1"
+description = "CLI tools for DjangoPlay developers. A lightweight command-line interface for managing local development environments within the DjangoPlay ecosystem."
+readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.11"
+
+license = "MIT"
+license-files = ["LICENSE"]
+
+authors = [
+    { name = "BinaryFleet" }
+]
+
+keywords = [
+    "django",
+    "cli",
+    "developer-tools",
+    "djangoplay",
+    "devtools",
+    "celery",
+    "ssl",
+    "local-development",
+]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+
+    "Framework :: Django",
+
+    "Intended Audience :: Developers",
+
+    "Operating System :: OS Independent",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Utilities",
+    "Environment :: Console",
+]
 
 dependencies = [
     "typer>=0.9",
     "rich>=13",
-    "pyyaml>=6.0"
+    "pyyaml>=6.0",
 ]
 
+# ----------------------------------------------------------------------
+# Project URLs
+# ----------------------------------------------------------------------
+[project.urls]
+Homepage = "https://github.com/binaryfleet/djangoplay-cli"
+Repository = "https://github.com/binaryfleet/djangoplay-cli"
+Issues = "https://github.com/binaryfleet/djangoplay-cli/issues"
+Documentation = "https://github.com/binaryfleet/djangoplay-cli#readme"
+
+# ----------------------------------------------------------------------
+# Optional Dependencies (Development Only)
+# Install via:
+#     pip install djangoplay-cli[dev]
+# ----------------------------------------------------------------------
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.4.0",
+    "pytest>=7.0",
+]
+
+# ----------------------------------------------------------------------
+# Console Script
+# ----------------------------------------------------------------------
 [project.scripts]
 dplay = "dplay.cli:main"
 
+# ======================================================================
+# Build System (PEP 517/518)
+# ======================================================================
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [tool.setuptools.packages.find]
 include = ["dplay*"]
+
+# ======================================================================
+# Ruff Configuration
+# ======================================================================
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "I",   # import sorting
+    "UP",  # pyupgrade
+    "B",   # bugbear
+]
+ignore = [
+    "E501",  # line length handled separately
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["dplay"]
