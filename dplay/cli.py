@@ -9,6 +9,7 @@ from importlib.metadata import version
 
 import typer
 
+from dplay.commands.dev.certs import certs_command
 from dplay.commands.dev.http import http_command
 from dplay.commands.dev.logs import logs_command
 from dplay.commands.dev.ssl import ssl_command
@@ -55,6 +56,8 @@ def dev_callback(ctx: typer.Context):
 dev_app.command("http")(http_command)
 dev_app.command("ssl")(ssl_command)
 dev_app.command("worker")(worker_command)
+dev_app.command("certs")(certs_command)
+
 
 app.add_typer(dev_app, name="dev")
 
