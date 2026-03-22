@@ -1,12 +1,7 @@
 # djangoplay-cli — PyPI Release Pipeline
-# Manually triggered only via GitLab UI → CI/CD → Run pipeline on main branch
-# Stages: test → build → version-check → publish
-
-stages:
-  - test
-  - build
-  - version-check
-  - publish
+# Triggered by root .gitlab-ci.yml workflow rules.
+# Publish runs on: push to main, manual web trigger, API trigger.
+# Publish does NOT run on: merge request pipelines.
 
 # ─────────────────────────────────────────
 # TEST
@@ -14,10 +9,6 @@ stages:
 test:
   stage: test
   image: python:3.11
-
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "push")'
-    - when: never
 
   variables:
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
@@ -43,10 +34,6 @@ build:
   stage: build
   image: python:3.11
   needs: [test]
-
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "push")'
-    - when: never
 
   variables:
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
@@ -81,10 +68,6 @@ version-check:
   stage: version-check
   image: python:3.11
   needs: [build]
-
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "push")'
-    - when: never
 
   script:
     - |
@@ -139,7 +122,10 @@ publish:
   needs: [version-check]
 
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main" && ($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web")'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
     - when: never
 
   variables:
@@ -151,7 +137,6 @@ publish:
 
   script:
     - echo "Publishing djangoplay-cli to PyPI..."
-    - ls -la dist/
     - twine upload dist/* --non-interactive
     - echo "Published successfully!"
 
