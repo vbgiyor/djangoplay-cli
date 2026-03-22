@@ -57,6 +57,7 @@ dev_app.command("http")(http_command)
 dev_app.command("ssl")(ssl_command)
 dev_app.command("worker")(worker_command)
 dev_app.command("certs")(certs_command)
+dev_app.command("logs")(logs_command)
 
 
 app.add_typer(dev_app, name="dev")
