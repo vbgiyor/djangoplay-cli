@@ -66,7 +66,7 @@ dplay --version
 Example output:
 
 ```
-1.0.2
+1.0.3
 ```
 
 ---
@@ -80,6 +80,7 @@ dplay
  ├── dev
  │    ├── http
  │    ├── ssl
+ │    ├── certs
  │    └── worker
  │
  ├── system
@@ -134,6 +135,8 @@ Performs the same steps as `dplay dev http`, plus:
 * generates self-signed certificates if absent
 * trusts the certificate in the macOS System Keychain automatically (macOS only)
 * starts the server via `runserver_plus` with the certificate and key
+* trusts the certificate in the system keychain automatically
+  (macOS Keychain, Linux system store, or Windows store via WSL)
 
 Server URL:
 
@@ -164,6 +167,32 @@ dplay dev worker
 
 Starts the Celery worker for the DjangoPlay application in the foreground.
 
+---
+
+### Regenerate SSL certificates
+```
+dplay dev certs
+```
+
+Regenerates local SSL certificates from the current `~/.dplay/config.yaml`.
+Use this after adding new subdomains to `subdomains.extra_domains` in config.
+
+Automatically trusts the new certificate in the system keychain on macOS,
+Linux, and WSL. No server restart required.
+
+To add subdomain coverage, update `~/.dplay/config.yaml`:
+```yaml
+subdomains:
+  extra_domains:
+    - issues.localhost
+    - docs.localhost
+```
+
+Then run:
+```
+dplay dev certs
+dplay dev ssl
+```
 ---
 
 # System Commands
