@@ -6,7 +6,7 @@
 
 [project]
 name = "djangoplay-cli"
-version = "1.0.3rc1"
+version = "1.0.4"
 description = "CLI tools for DjangoPlay developers. A lightweight command-line interface for managing local development environments within the DjangoPlay ecosystem."
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.11"
