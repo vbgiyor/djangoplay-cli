@@ -1,9 +1,11 @@
 # djangoplay-cli
 
-![Python](https://img.shields.io/badge/python-3.11%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+![PyPI](https://img.shields.io/pypi/v/djangoplay-cli)
+![Python](https://img.shields.io/pypi/pyversions/djangoplay-cli)
+![License](https://img.shields.io/pypi/l/djangoplay-cli)
+![Django](https://img.shields.io/badge/django-4.2-green)
 ![Lint](https://img.shields.io/badge/lint-ruff-informational)
-![Formatting](https://img.shields.io/badge/format-ruff-informational)
+
 
 **djangoplay-cli** is a developer command-line interface for managing local
 development environments within the **DjangoPlay ecosystem**.
