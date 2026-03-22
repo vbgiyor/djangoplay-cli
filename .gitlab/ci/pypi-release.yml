@@ -2,13 +2,6 @@
 # Manually triggered only via GitLab UI → CI/CD → Run pipeline on main branch
 # Stages: test → build → version-check → publish
 
-workflow:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH == "main"'
-    # allow auto-run only on push to main (merge result)
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"'
-    - when: never
-
 stages:
   - test
   - build
@@ -146,7 +139,7 @@ publish:
   needs: [version-check]
 
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_COMMIT_BRANCH == "main" && ($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web")'
     - when: never
 
   variables:
@@ -158,6 +151,7 @@ publish:
 
   script:
     - echo "Publishing djangoplay-cli to PyPI..."
+    - ls -la dist/
     - twine upload dist/* --non-interactive
     - echo "Published successfully!"
 
