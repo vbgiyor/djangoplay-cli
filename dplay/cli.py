@@ -37,30 +37,19 @@ def get_cli_version() -> str:
 
 
 # ------------------------------------------------------------------
-# DEV COMMAND GROUP
+# SERVER COMMANDS (promoted from dev group)
 # ------------------------------------------------------------------
 
-dev_app = typer.Typer(help="Development commands", invoke_without_command=True)
+app.command("http")(http_command)
+app.command("ssl")(ssl_command)
+app.command("worker")(worker_command)
+app.command("certs")(certs_command)
 
+# ------------------------------------------------------------------
+# LOG COMMAND
+# ------------------------------------------------------------------
 
-@dev_app.callback(invoke_without_command=True)
-def dev_callback(ctx: typer.Context):
-    """
-    Development commands. Defaults to HTTP server when no subcommand given.
-    """
-
-    if ctx.invoked_subcommand is None:
-        http_command()
-
-
-dev_app.command("http")(http_command)
-dev_app.command("ssl")(ssl_command)
-dev_app.command("worker")(worker_command)
-dev_app.command("certs")(certs_command)
-dev_app.command("logs")(logs_command)
-
-
-app.add_typer(dev_app, name="dev")
+app.command("logs")(logs_command)
 
 # ------------------------------------------------------------------
 # SYSTEM COMMAND GROUP
@@ -74,12 +63,6 @@ system_app.command("reset")(reset_command)
 app.add_typer(system_app, name="system")
 
 # ------------------------------------------------------------------
-# LOG COMMAND
-# ------------------------------------------------------------------
-
-app.command("logs")(logs_command)
-
-# -------------------------------------------------------------
 # GLOBAL OPTIONS
 # ------------------------------------------------------------------
 

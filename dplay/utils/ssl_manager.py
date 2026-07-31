@@ -37,6 +37,7 @@ def _build_san() -> str:
 
     config = load_config()
     host = config["site"]["host"]
+    subdomains = config.get("subdomains", [])
 
     san_entries = {
         "DNS:localhost",
@@ -48,13 +49,13 @@ def _build_san() -> str:
         san_entries.add(f"DNS:{host}")
         parts = host.split(".")
         if len(parts) > 1:
-            parent = ".".join(parts[1:])
-            san_entries.add(f"DNS:*.{parent}")
+            san_entries.add(f"DNS:*.{'.'.join(parts[1:])}")
 
-    # Explicit subdomains for Chrome (does not honour *.localhost wildcards)
-    extra_domains = config.get("subdomains", {}).get("extra_domains", [])
-    for domain in extra_domains:
-        san_entries.add(f"DNS:{domain}")
+    # Explicit per-subdomain SANs for Chrome (doesn't honour *.localhost)
+    for subdomain in subdomains:
+        subdomain = str(subdomain).strip()
+        if subdomain:
+            san_entries.add(f"DNS:{subdomain}.{host}")
 
     return ",".join(sorted(san_entries))
 

@@ -42,16 +42,16 @@ def logs_command(
     ),
 ):
     """
-    Stream development logs with pretty-printed, colorized output.
+    Stream application logs with pretty-printed, colorized output.
 
     Defaults to django.log. Pass an app name to tail a specific log.
 
     Examples:
 
-        dplay dev logs
-        dplay dev logs users
-        dplay dev logs mailer --level ERROR
-        dplay dev logs django --no-follow --lines 100
+        dplay logs
+        dplay logs users
+        dplay logs mailer --level ERROR
+        dplay logs django --no-follow --lines 100
     """
 
     target_app = app or DEFAULT_APP
