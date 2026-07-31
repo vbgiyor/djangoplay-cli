@@ -28,8 +28,18 @@ def http_command():
     config = load_config()
 
     host = config["site"]["host"]
-    port = 3333
-    url = f"http://{host}:{port}/console/login/"
+    port = str(config["site"]["http_port"])
+    protocol = config["site"]["http_protocol"]
+
+    # Set runtime site vars before encrypt_env runs
+    import os
+
+    os.environ["SITE_PROTOCOL"] = protocol
+    os.environ["SITE_HOST"] = host
+    os.environ["SITE_PORT"] = port
+    os.environ["SITE_URL"] = config["site"]["http_url"]
+
+    login_url = f"{config['site']['http_url']}/accounts/login/"
 
     print_environment(repo_path, python_exec)
 
@@ -42,7 +52,7 @@ def http_command():
 
     stop_django()
 
-    open_browser(url)
+    open_browser(login_url)
 
     print("Starting Django HTTP server...")
 

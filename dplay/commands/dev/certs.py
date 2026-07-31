@@ -28,4 +28,4 @@ def certs_command():
     print(f"\nCertificate: ~/.dplay/ssl/{cert_file.name}")
     print(f"Key:         ~/.dplay/ssl/{key_file.name}")
 
-    print("\nRun `dplay dev ssl` to start the HTTPS server with the new certificate.")
+    print("\nRun `dplay ssl` to start the HTTPS server with the new certificate.")

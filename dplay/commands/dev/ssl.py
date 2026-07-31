@@ -30,8 +30,18 @@ def ssl_command():
     config = load_config()
 
     host = config["site"]["host"]
-    port = config["site"]["port"]
-    url = f"https://{host}:{port}/console/login/"
+    port = str(config["site"]["ssl_port"])
+    protocol = config["site"]["ssl_protocol"]
+
+    # Set runtime site vars before encrypt_env runs
+    import os
+
+    os.environ["SITE_PROTOCOL"] = protocol
+    os.environ["SITE_HOST"] = host
+    os.environ["SITE_PORT"] = port
+    os.environ["SITE_URL"] = config["site"]["ssl_url"]
+
+    login_url = f"{config['site']['ssl_url']}/accounts/login/"
 
     print_environment(repo_path, python_exec)
 
@@ -42,7 +52,7 @@ def ssl_command():
     try:
         cert_file, key_file = ensure_ssl_certificates()
     except TLSError:
-        print("TLS certificate unavailable. Use `dplay dev http`")
+        print("TLS certificate unavailable. Use `dplay http`")
         sys.exit(1)
 
     restart_celery(repo_path, python_exec)
@@ -50,7 +60,7 @@ def ssl_command():
 
     stop_django()
 
-    open_browser(url)
+    open_browser(login_url)
 
     print("Starting Django HTTPS server...")
 

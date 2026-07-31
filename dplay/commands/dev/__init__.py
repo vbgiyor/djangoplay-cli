@@ -6,12 +6,11 @@ the local DjangoPlay development environment.
 
 Available commands include:
 
-- dev http     → start Django development server (HTTP)
-- dev ssl      → start Django development server (HTTPS)
-- dev worker   → start Celery worker
-- dev up       → start full development environment
-- dev down     → stop development environment
-- dev logs     → display development logs
+- dplay http     → start Django development server (HTTP)
+- dplay ssl      → start Django development server (HTTPS)
+- dplay worker   → start Celery worker
+- dplay certs    → regenerate SSL certificates
+- dplay logs     → stream application logs
 
 The commands in this package coordinate services such as:
 
@@ -20,6 +19,6 @@ The commands in this package coordinate services such as:
 - Redis
 - PostgreSQL
 
-These commands are registered under the `dplay dev` command
+These commands are registered at the root `dplay` command
 group defined in `dplay.cli`.
 """

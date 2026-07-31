@@ -6,6 +6,45 @@ This project follows **Semantic Versioning**.
 
 ---
 
+## [1.0.5] - 2026-03-22
+
+**Tag:** `v1.0.5-top-level-server-commands`
+
+### Top-Level Server Commands + Configuration Improvements
+
+### Added
+
+* `dplay http` — HTTP development server promoted to a top-level command
+* `dplay ssl` — HTTPS development server promoted to a top-level command
+* `dplay certs` — regenerate SSL certificates directly from the top level
+* dynamic server configuration using `http_protocol`, `http_port`, and `http_url`
+  from `~/.dplay/config.yaml`
+* automatic environment variable configuration for HTTP and HTTPS startup
+* explicit per-subdomain SAN generation from `subdomains.extra_domains`
+  during SSL certificate creation
+
+### Changed
+
+* server commands moved from the `dev` command group to the CLI root for a
+  simpler developer experience
+* `http_command()` now derives protocol, port, and related environment values
+  directly from configuration instead of relying on hard-coded defaults
+* `ssl_command()` now configures SSL-specific environment variables before
+  starting the development server
+* command naming within the development package refactored for improved clarity
+* CLI command registration simplified by removing duplicate log command
+  registration and consolidating global option handling
+* `logs_command` documentation updated to reflect support for streaming logs
+  across application services rather than only Django logs
+
+### Fixed
+
+* improved validation of configured subdomains before generating certificate
+  Subject Alternative Names (SANs), reducing the risk of invalid certificate
+  generation due to misconfiguration
+
+---
+
 ## [1.0.4] - 2026-03-22
 
 **Tag:** `v1.0.4-app-log-streaming`
