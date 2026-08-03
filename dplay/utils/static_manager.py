@@ -28,7 +28,7 @@ def collect_static(repo_path: str, python_exec: str):
 
     result = subprocess.run(
         [python_exec, "manage.py", "collectstatic", "--noinput", "--clear"],
-        cwd=f"{repo_path}/backend",
+        cwd=f"{repo_path}/webapp",
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )

@@ -219,7 +219,7 @@ Options:
 | `--level`, `-l` | — | Filter by log level |
 | `--follow` / `--no-follow` | follow | Stream new log entries |
 
-Applications are discovered automatically from `backend/logs/`.
+Applications are discovered automatically from `webapp/logs/`.
 
 ---
 
