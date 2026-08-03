@@ -27,7 +27,7 @@ def worker_command():
 
     subprocess.run(
         [python_exec, "-m", "celery", "-A", "paystream", "worker", "-l", "info"],
-        cwd=f"{repo_path}/backend",
+        cwd=f"{repo_path}/webapp",
         env=env,
         check=True,
     )

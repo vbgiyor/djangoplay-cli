@@ -39,12 +39,12 @@ def start_celery(repo_path: str, python_exec: str):
     Start Celery worker and beat as background processes.
     """
 
-    backend_dir = f"{repo_path}/backend"
+    webapp_dir = f"{repo_path}/webapp"
     env = _celery_env()
 
     subprocess.Popen(
         [python_exec, "-m", "celery", "-A", "paystream", "worker", "-l", "info"],
-        cwd=backend_dir,
+        cwd=webapp_dir,
         env=env,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
@@ -52,7 +52,7 @@ def start_celery(repo_path: str, python_exec: str):
 
     subprocess.Popen(
         [python_exec, "-m", "celery", "-A", "paystream", "beat", "-l", "info"],
-        cwd=backend_dir,
+        cwd=webapp_dir,
         env=env,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,

@@ -59,7 +59,7 @@ def http_command():
     try:
         subprocess.run(
             [python_exec, "manage.py", "runserver", f"{host}:{port}"],
-            cwd=f"{repo_path}/backend",
+            cwd=f"{repo_path}/webapp",
             check=True,
         )
     except subprocess.CalledProcessError as e:

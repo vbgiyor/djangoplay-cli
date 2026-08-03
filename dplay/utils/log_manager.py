@@ -54,10 +54,10 @@ def get_log_dir(repo_path: str) -> Path:
     Returns
     -------
     Path
-        Absolute path to {repo_path}/backend/logs/.
+        Absolute path to {repo_path}/webapp/logs/.
     """
 
-    return Path(repo_path) / "backend" / "logs"
+    return Path(repo_path) / "webapp" / "logs"
 
 
 # ------------------------------------------------------------------

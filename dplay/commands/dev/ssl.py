@@ -76,7 +76,7 @@ def ssl_command():
                 "--key-file",
                 str(key_file),
             ],
-            cwd=f"{repo_path}/backend",
+            cwd=f"{repo_path}/webapp",
             check=True,
         )
     except subprocess.CalledProcessError as e:

@@ -27,11 +27,11 @@ def encrypt_env(repo_path: str, python_exec: str):
 
     print("Encrypting environment variables...")
 
-    encrypt_script = Path(repo_path) / "backend" / "paystream" / "security" / "encrypt_env.py"
+    encrypt_script = Path(repo_path) / "webapp" / "paystream" / "security" / "encrypt_env.py"
 
     result = subprocess.run(
         [python_exec, str(encrypt_script)],
-        cwd=f"{repo_path}/backend",
+        cwd=f"{repo_path}/webapp",
     )
 
     if result.returncode != 0:

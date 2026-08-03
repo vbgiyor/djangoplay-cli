@@ -5,6 +5,13 @@ All notable changes to the **djangoplay-cli** developer tooling will be document
 This project follows **Semantic Versioning**.
 
 ---
+## [1.0.6] - 2026-08-03
+
+### Added
+
+* `backend` -> `webapp` — Rename DjangoPlay repository root dir: `backend` -> `webapp`
+
+---
 
 ## [1.0.5] - 2026-03-22
 
